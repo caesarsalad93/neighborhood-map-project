@@ -50,8 +50,7 @@
                         <input id="input" data-bind="textInput: inputValue" placeholder="Filter"/>
                     </div>
                     <ul data-bind="foreach: filteredTitles">
-                        <li><span data-bind="text: $data"></span></li>
-<!--                        <span><li data-bind="text: $data"></li></span>-->
+                        <li><span data-bind="text: $data, click: $parent.listen"></span></li>
                     </ul>
                 </div>
                 <div class="col-xs-9 map">
@@ -68,7 +67,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js"></script>
         
         <script src="js/map.js"></script>
-        <script async defer
+        <script async def onerror ="handle()"
          src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDK-orXU13v8m3Vfm4G2TTDgI2rZC6KWGc&callback=initMap">
         </script>
         

@@ -1,3 +1,7 @@
+function handle() {
+    $('body').empty();
+    alert('error retrieving map')
+}
 var map;
 var markers = [];
 function initMap() {
@@ -16,7 +20,7 @@ var sanDiego = {lat: 32.7913085, lng: -117.1523774};
         var marker = new google.maps.Marker({
             position: position,
             map: map,
-            animation: google.maps.Animation.DROP,
+//            animation: google.maps.Animation.DROP,
             title: title,
             yelpTitle: yelpTitle,
             id: i,
@@ -29,8 +33,8 @@ var sanDiego = {lat: 32.7913085, lng: -117.1523774};
             toggleBounce(this);
         });
         var yelp_url = 'https://api.yelp.com/v2/business/' + yelpTitle;
+        
         getAjax(yelp_url, i);
-
     }
     
 
@@ -38,15 +42,26 @@ var sanDiego = {lat: 32.7913085, lng: -117.1523774};
     
     //Content to be displayed in infoWindow
     function populateInfoWindow(marker, infowindow) {
-        var address = marker.yelpData.location.display_address.join(' ');
+        var name;
+        var url;
+        var rating;
+        var phone;
+        var address;
         var content;
+        
+        name = marker.yelpData.name ? marker.yelpData.name : 'Name unavailable';
+        url = marker.yelpData.url ? marker.yelpData.url : 'Url unavailable';
+        rating = marker.yelpData.rating_img_url_small ? marker.yelpData.rating_img_url_small : 'Rating unavailable';
+        phone = marker.yelpData.display_phone ? marker.yelpData.display_phone : 'Phone number unavailable';
+        address = marker.yelpData.location ? marker.yelpData.location.display_address.join(' ') : 'Address unavailable';
+        
         content = '<div>';
-        content += ('<strong>' + marker.yelpData.name + ' ' + '</strong>');
-        content += (' <a target="_blank" href=' + marker.yelpData.url + '><i class="fa fa-external-link" aria-hidden="true"></i></a>');
+        content += ('<strong>' + name + ' ' + '</strong>');
+        content += (' <a target="_blank" href=' + url + '><i class="fa fa-external-link" aria-hidden="true"></i></a>');
         content += '<br>';
-        content += ('<img src="' + marker.yelpData.rating_img_url_small + '" alt="Number of yelp stars"' +'/>')
+        content += ('<img src="' + rating + '" alt="Number of yelp stars"' +'/>');
         content += '<br>';
-        content += marker.yelpData.display_phone;
+        content += phone;
         content += '<br>';
         content += address;
         content += '</div>';
@@ -56,11 +71,8 @@ var sanDiego = {lat: 32.7913085, lng: -117.1523774};
     }
     
     function toggleBounce(marker) {
-        if (marker.getAnimation() !== null) {
-            marker.setAnimation(null);
-        } else {
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-        }
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function(){ marker.setAnimation(null); }, 1400);
     }
 }
 
@@ -91,45 +103,36 @@ var locations = [
 var titlesArray = locations.map(function(value) {
     return value.title;
 });
-function viewModel() {
+function ViewModel() {
     var self = this;
     //Value for the search box
-    this.inputValue = ko.observable($('#input').val());
+    this.inputValue = ko.observable('');
     this.titles = ko.observableArray(titlesArray);
     this.filteredTitles = ko.computed(function(){
+// Adds event listener to search box
+// Removes marker for a location if it doesn't fit the search criteria
+        for(var i = 0; i < markers.length; i++) {
+            if(markers[i].title.toLowerCase().includes(self.inputValue().toLowerCase()) === false) {
+                markers[i].setVisible(false);
+            } else {
+                markers[i].setVisible(true);
+            }
+        }
        return self.titles().filter(function(value){
            return value.toLowerCase().includes(self.inputValue().toLowerCase());
        }); 
     });
-
-}
-ko.applyBindings(new viewModel());
-
-// Adds event listener to search box
-// Removes marker for a location if it doesn't fit the search criteria
-$('#input').on('input', function() {
-    var inputValue = $('#input').val();
-    for(var i = 0; i < markers.length; i++) {
-        //if the input value does not include the title, set that marker to hide.
-        if(markers[i].title.toLowerCase().includes(inputValue.toLowerCase()) === false) {
-            markers[i].setVisible(false);
-        } else {
-            markers[i].setVisible(true);
-        }
-    }
-});
-
 // Add event listener to the list items
 // When clicked, triggers info window for that restaurant
-$('ul').on('click', function(event) {
-    for(var i = 0; i < markers.length; i++) {
-        if(markers[i].title.includes(event.target.innerHTML)) {
-            google.maps.event.trigger(markers[i], 'click');
+    this.listen = function (title) {
+        for(var i = 0; i < markers.length; i++) {
+            if(markers[i].title.includes(title)) {
+                google.maps.event.trigger(markers[i], 'click');
+            }
         }
-    }
-});
-
-
+    };
+}
+ko.applyBindings(new ViewModel());
 
 /// YELP API CODE
 //  ---------------------------------------------
@@ -165,11 +168,14 @@ function getAjax(yelp_url, i) {
       data: parameters,
       cache: true,                // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
       dataType: 'jsonp',
+      beforeSend: function() {
+            markers[i].yelpData = 'notready';
+      },
       success: function(results) {
           markers[i].yelpData = results;
       },
       error: function(error) {
-        alert('Unable to retrieve Yelp API data.');
+          markers[i].yelpData = 'Error';
       }
     };
     $.ajax(settings);
