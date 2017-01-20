@@ -1,6 +1,5 @@
 # Neighborhood Maps Project
----
-Going to school in norcal made me realize how much I love Mexican food. Having been born and raised in San Diego, there really is no comparison up north. Whenever I came home to visit, I would immediately get a burrito from one of my favorite taco shops. This app shows a list of my favorite taco shops in San Diego County.
+Going to school in Northern California made me realize how much I love Mexican food. Having been born and raised in San Diego, there really is no comparison up north. Whenever I came home to visit, I would immediately get a burrito from one of my favorite taco shops. This app shows a list of my favorite taco shops in San Diego County.
 
 ## Get Started
 Clone this repo, navigate to the folder and install oauth-signature-js
