@@ -4,7 +4,7 @@ Going to school in Northern California made me realize how much I love Mexican f
 ![Demo of map being used](http://res.cloudinary.com/lptyiqogm/image/upload/v1487826496/maps_bncwus.gif)
 
 ## Get Started
-Clone this repo, navigate to the folder and install oauth-signature-js
+Clone this repo, navigate to the folder and install <a href="https://github.com/bettiolo/oauth-signature-js">oauth-signature-js</a>
 ```
 npm install oauth-signature
 ```
