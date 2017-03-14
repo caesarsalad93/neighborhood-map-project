@@ -1,7 +1,3 @@
-function handle() {
-    $('body').empty();
-    alert('error retrieving map')
-}
 var map;
 var markers = [];
 function initMap() {
@@ -20,7 +16,6 @@ var sanDiego = {lat: 32.7913085, lng: -117.1523774};
         var marker = new google.maps.Marker({
             position: position,
             map: map,
-//            animation: google.maps.Animation.DROP,
             title: title,
             yelpTitle: yelpTitle,
             id: i,
@@ -105,12 +100,9 @@ var titlesArray = locations.map(function(value) {
 });
 function ViewModel() {
     var self = this;
-    //Value for the search box
     this.inputValue = ko.observable('');
     this.titles = ko.observableArray(titlesArray);
     this.filteredTitles = ko.computed(function(){
-// Adds event listener to search box
-// Removes marker for a location if it doesn't fit the search criteria
         for(var i = 0; i < markers.length; i++) {
             if(markers[i].title.toLowerCase().includes(self.inputValue().toLowerCase()) === false) {
                 markers[i].setVisible(false);
