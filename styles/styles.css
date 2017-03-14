@@ -1,0 +1,31 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.map {
+    height: 100%;
+    padding: 0;
+}
+#map {
+    height: 100%;
+}
+.container {
+    height: 100%;
+}
+.row {
+    height: 100%
+}
+ul {
+    padding: 0;
+    margin: 0;
+
+}
+span {
+    color: royalblue;
+    cursor: crosshair;      
+}
+.container {
+    padding: 0;
+}
